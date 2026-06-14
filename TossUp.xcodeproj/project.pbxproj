@@ -1,0 +1,492 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		TUB001 /* TossUpApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF001 /* TossUpApp.swift */; };
+		TUB002 /* NSBQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF002 /* NSBQuestion.swift */; };
+		TUB003 /* PersistenceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF003 /* PersistenceModels.swift */; };
+		TUB004 /* AnswerNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF004 /* AnswerNormalizer.swift */; };
+		TUB005 /* PDFParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF005 /* PDFParser.swift */; };
+		TUB006 /* QuestionBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF006 /* QuestionBank.swift */; };
+		TUB007 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF007 /* SettingsStore.swift */; };
+		TUB008 /* QuizViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF008 /* QuizViewModel.swift */; };
+		TUB009 /* ProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF009 /* ProgressViewModel.swift */; };
+		TUB010 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF010 /* RootView.swift */; };
+		TUB011 /* StudyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF011 /* StudyView.swift */; };
+		TUB012 /* QuizTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF012 /* QuizTabView.swift */; };
+		TUB013 /* QuizSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF013 /* QuizSessionView.swift */; };
+		TUB014 /* ProgressTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF014 /* ProgressTabView.swift */; };
+		TUB015 /* SettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF015 /* SettingsTabView.swift */; };
+		TUB016 /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF016 /* SharedComponents.swift */; };
+		TUB017 /* AppLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF017 /* AppLayout.swift */; };
+		TUB018 /* SpeechManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF018 /* SpeechManager.swift */; };
+		TUB019 /* SpeechTextSanitizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF019 /* SpeechTextSanitizer.swift */; };
+		TUB100 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = TUF100 /* Assets.xcassets */; };
+		TUB101 /* NSB_PDFs in Resources */ = {isa = PBXBuildFile; fileRef = TUF101 /* NSB_PDFs */; };
+		TUB200 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF200 /* ParserTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		TUX001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = TUP000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = TUT001;
+			remoteInfo = TossUp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		TUF900 /* TossUp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TossUp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		TUF901 /* TossUpTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TossUpTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		TUF001 /* TossUpApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TossUpApp.swift; sourceTree = "<group>"; };
+		TUF002 /* NSBQuestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSBQuestion.swift; sourceTree = "<group>"; };
+		TUF003 /* PersistenceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceModels.swift; sourceTree = "<group>"; };
+		TUF004 /* AnswerNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerNormalizer.swift; sourceTree = "<group>"; };
+		TUF005 /* PDFParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFParser.swift; sourceTree = "<group>"; };
+		TUF006 /* QuestionBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionBank.swift; sourceTree = "<group>"; };
+		TUF007 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		TUF008 /* QuizViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizViewModel.swift; sourceTree = "<group>"; };
+		TUF009 /* ProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewModel.swift; sourceTree = "<group>"; };
+		TUF010 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		TUF011 /* StudyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyView.swift; sourceTree = "<group>"; };
+		TUF012 /* QuizTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizTabView.swift; sourceTree = "<group>"; };
+		TUF013 /* QuizSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizSessionView.swift; sourceTree = "<group>"; };
+		TUF014 /* ProgressTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressTabView.swift; sourceTree = "<group>"; };
+		TUF015 /* SettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabView.swift; sourceTree = "<group>"; };
+		TUF016 /* SharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedComponents.swift; sourceTree = "<group>"; };
+		TUF017 /* AppLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLayout.swift; sourceTree = "<group>"; };
+		TUF018 /* SpeechManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechManager.swift; sourceTree = "<group>"; };
+		TUF019 /* SpeechTextSanitizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTextSanitizer.swift; sourceTree = "<group>"; };
+		TUF100 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		TUF101 /* NSB_PDFs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = NSB_PDFs; sourceTree = "<group>"; };
+		TUF200 /* ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		TUP001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TUP002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		TUG001 = {
+			isa = PBXGroup;
+			children = (
+				TUG002 /* TossUp */,
+				TUG003 /* TossUpTests */,
+				TUG004 /* Products */,
+				TUF101 /* NSB_PDFs */,
+			);
+			sourceTree = "<group>";
+		};
+		TUG002 /* TossUp */ = {
+			isa = PBXGroup;
+			children = (
+				TUF001 /* TossUpApp.swift */,
+				TUG010 /* Models */,
+				TUG011 /* Services */,
+				TUG012 /* ViewModels */,
+				TUG013 /* Views */,
+				TUG016 /* Helpers */,
+				TUF100 /* Assets.xcassets */,
+			);
+			path = TossUp;
+			sourceTree = "<group>";
+		};
+		TUG003 /* TossUpTests */ = {
+			isa = PBXGroup;
+			children = (
+				TUF200 /* ParserTests.swift */,
+			);
+			path = TossUpTests;
+			sourceTree = "<group>";
+		};
+		TUG004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				TUF900 /* TossUp.app */,
+				TUF901 /* TossUpTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		TUG010 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				TUF002 /* NSBQuestion.swift */,
+				TUF003 /* PersistenceModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		TUG011 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				TUF004 /* AnswerNormalizer.swift */,
+				TUF005 /* PDFParser.swift */,
+				TUF006 /* QuestionBank.swift */,
+				TUF007 /* SettingsStore.swift */,
+				TUF018 /* SpeechManager.swift */,
+				TUF019 /* SpeechTextSanitizer.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		TUG012 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				TUF008 /* QuizViewModel.swift */,
+				TUF009 /* ProgressViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		TUG013 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				TUG014 /* Components */,
+				TUF010 /* RootView.swift */,
+				TUF011 /* StudyView.swift */,
+				TUF012 /* QuizTabView.swift */,
+				TUF013 /* QuizSessionView.swift */,
+				TUF014 /* ProgressTabView.swift */,
+				TUF015 /* SettingsTabView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		TUG014 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				TUF016 /* SharedComponents.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		TUG016 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				TUF017 /* AppLayout.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		TUT001 /* TossUp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = TUC003;
+			buildPhases = (
+				TUE001 /* Sources */,
+				TUP001 /* Frameworks */,
+				TUE002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TossUp;
+			productName = TossUp;
+			productReference = TUF900 /* TossUp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		TUT002 /* TossUpTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = TUC004;
+			buildPhases = (
+				TUE003 /* Sources */,
+				TUP002 /* Frameworks */,
+				TUE004 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				TUD001 /* PBXTargetDependency */,
+			);
+			name = TossUpTests;
+			productName = TossUpTests;
+			productReference = TUF901 /* TossUpTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		TUP000 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+			};
+			buildConfigurationList = TUC001;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = TUG001;
+			productRefGroup = TUG004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				TUT001 /* TossUp */,
+				TUT002 /* TossUpTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		TUE002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				TUB100 /* Assets.xcassets in Resources */,
+				TUB101 /* NSB_PDFs in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TUE004 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		TUE001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				TUB001 /* TossUpApp.swift in Sources */,
+				TUB002 /* NSBQuestion.swift in Sources */,
+				TUB003 /* PersistenceModels.swift in Sources */,
+				TUB004 /* AnswerNormalizer.swift in Sources */,
+				TUB005 /* PDFParser.swift in Sources */,
+				TUB006 /* QuestionBank.swift in Sources */,
+				TUB007 /* SettingsStore.swift in Sources */,
+				TUB008 /* QuizViewModel.swift in Sources */,
+				TUB009 /* ProgressViewModel.swift in Sources */,
+				TUB010 /* RootView.swift in Sources */,
+				TUB011 /* StudyView.swift in Sources */,
+				TUB012 /* QuizTabView.swift in Sources */,
+				TUB013 /* QuizSessionView.swift in Sources */,
+				TUB014 /* ProgressTabView.swift in Sources */,
+				TUB015 /* SettingsTabView.swift in Sources */,
+				TUB016 /* SharedComponents.swift in Sources */,
+				TUB017 /* AppLayout.swift in Sources */,
+				TUB018 /* SpeechManager.swift in Sources */,
+				TUB019 /* SpeechTextSanitizer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TUE003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				TUB200 /* ParserTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		TUD001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = TUT001 /* TossUp */;
+			targetProxy = TUX001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		TUC005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = auto;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		TUC006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				SDKROOT = auto;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		TUC007 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentTeal;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = TossUp;
+				INFOPLIST_KEY_LSMinimumSystemVersion = 14.0;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tossup.nsb;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		TUC008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentTeal;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = TossUp;
+				INFOPLIST_KEY_LSMinimumSystemVersion = 14.0;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tossup.nsb;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		TUC009 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tossup.nsb.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TossUp.app/Contents/MacOS/TossUp";
+			};
+			name = Debug;
+		};
+		TUC010 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tossup.nsb.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TossUp.app/Contents/MacOS/TossUp";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		TUC001 /* Build configuration list for PBXProject */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				TUC005 /* Debug */,
+				TUC006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		TUC003 /* Build configuration list for PBXNativeTarget TossUp */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				TUC007 /* Debug */,
+				TUC008 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		TUC004 /* Build configuration list for PBXNativeTarget TossUpTests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				TUC009 /* Debug */,
+				TUC010 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = TUP000 /* Project object */;
+}

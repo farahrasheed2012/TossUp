@@ -1,0 +1,10 @@
+NSB_PDFs/
+manifest.json
+*.pdf
+
+# Xcode user state
+*.xcuserstate
+xcuserdata/
+
+# Keep folder structure
+!.gitkeep
