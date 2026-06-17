@@ -91,8 +91,23 @@ private struct FilterChip: View {
 struct ChoiceButton: View {
     let choice: String
     let isCorrectHighlight: Bool
+    let isWrongHighlight: Bool
     let isDisabled: Bool
     let action: () -> Void
+
+    init(
+        choice: String,
+        isCorrectHighlight: Bool,
+        isWrongHighlight: Bool = false,
+        isDisabled: Bool,
+        action: @escaping () -> Void
+    ) {
+        self.choice = choice
+        self.isCorrectHighlight = isCorrectHighlight
+        self.isWrongHighlight = isWrongHighlight
+        self.isDisabled = isDisabled
+        self.action = action
+    }
 
     private var letter: String {
         String(choice.prefix(1)).uppercased()
@@ -111,22 +126,40 @@ struct ChoiceButton: View {
                 Text(letter)
                     .font(.headline.monospaced())
                     .frame(width: 28, height: 28)
-                    .background(isCorrectHighlight ? AppTheme.success.opacity(0.25) : AppTheme.accent.opacity(0.15))
+                    .background(backgroundColorForLetter)
                     .clipShape(Circle())
                 Text(bodyText)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(14)
-            .background(isCorrectHighlight ? AppTheme.success.opacity(0.12) : AppTheme.cardBackground)
+            .background(cardBackgroundColor)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isCorrectHighlight ? AppTheme.success : AppTheme.cardBorder, lineWidth: 1)
+                    .stroke(borderColor, lineWidth: isCorrectHighlight || isWrongHighlight ? 2 : 1)
             )
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
         .disabled(isDisabled)
+    }
+
+    private var backgroundColorForLetter: Color {
+        if isCorrectHighlight { return AppTheme.success.opacity(0.25) }
+        if isWrongHighlight { return AppTheme.danger.opacity(0.25) }
+        return AppTheme.accent.opacity(0.15)
+    }
+
+    private var cardBackgroundColor: Color {
+        if isCorrectHighlight { return AppTheme.success.opacity(0.12) }
+        if isWrongHighlight { return AppTheme.danger.opacity(0.08) }
+        return AppTheme.cardBackground
+    }
+
+    private var borderColor: Color {
+        if isCorrectHighlight { return AppTheme.success }
+        if isWrongHighlight { return AppTheme.danger }
+        return AppTheme.cardBorder
     }
 }
 

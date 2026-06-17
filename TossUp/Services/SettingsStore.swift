@@ -12,6 +12,7 @@ final class SettingsStore: ObservableObject {
     @AppStorage("autoAdvanceDelay") var autoAdvanceDelay: Double = 1.5
     @AppStorage("studentName") var studentName: String = "Soha"
     @AppStorage("readQuestionsAloud") var readQuestionsAloud: Bool = true
+    @AppStorage("showDetailedExplanations") var showDetailedExplanations: Bool = true
 
     var timerPreset: TimerPreset {
         get { TimerPreset(rawValue: timerPresetRaw) ?? .officialMC }

@@ -51,6 +51,8 @@ struct NSBQuestion: Identifiable, Codable, Hashable {
     let choices: [String]?
     let correctAnswer: String
     let sourcePDF: String
+    /// Bundled JSON topic id — matches `QuizTopic.id` in TopicCatalog.
+    let topicId: String?
 
     init(
         id: UUID = UUID(),
@@ -60,7 +62,8 @@ struct NSBQuestion: Identifiable, Codable, Hashable {
         questionText: String,
         choices: [String]?,
         correctAnswer: String,
-        sourcePDF: String
+        sourcePDF: String,
+        topicId: String? = nil
     ) {
         self.id = id
         self.subject = subject
@@ -70,6 +73,7 @@ struct NSBQuestion: Identifiable, Codable, Hashable {
         self.choices = choices
         self.correctAnswer = correctAnswer
         self.sourcePDF = sourcePDF
+        self.topicId = topicId
     }
 }
 

@@ -39,7 +39,7 @@ final class QuestionBank: ObservableObject {
         let fingerprints = fingerprintPDFs(pdfURLs)
 
         if let cached = loadCache(), cached.pdfFingerprints == fingerprints, !cached.questions.isEmpty {
-            questions = cached.questions
+            questions = mergeBundled(into: cached.questions)
             lastParsedAt = cached.parsedAt
             sourcePDFCount = cached.sourcePDFCount
             return
@@ -47,30 +47,82 @@ final class QuestionBank: ObservableObject {
 
         do {
             let parsed = try parser.parseAllPDFs(in: pdfURLs, logURL: logURL)
-            questions = parsed
+            questions = mergeBundled(into: parsed)
             lastParsedAt = Date()
             saveCache(
                 QuestionBankManifest(
                     parsedAt: lastParsedAt ?? Date(),
                     sourcePDFCount: pdfURLs.count,
-                    questionCount: parsed.count,
+                    questionCount: questions.count,
                     pdfFingerprints: fingerprints,
-                    questions: parsed
+                    questions: questions
                 )
             )
         } catch {
             loadError = error.localizedDescription
             if let cached = loadCache() {
-                questions = cached.questions
+                questions = mergeBundled(into: cached.questions)
                 lastParsedAt = cached.parsedAt
+            } else {
+                questions = BundledQuestionLoader.loadAll()
             }
         }
     }
 
-    func questions(subjects: Set<Subject>, rounds: Set<String> = []) -> [NSBQuestion] {
+    func filteredQuestions(
+        subjects: Set<Subject>,
+        rounds: Set<String> = [],
+        sourcePDFs: Set<String> = []
+    ) -> [NSBQuestion] {
         questions.filter { question in
-            subjects.contains(question.subject) && (rounds.isEmpty || rounds.contains(question.round))
+            subjects.contains(question.subject)
+                && (rounds.isEmpty || rounds.contains(question.round))
+                && (sourcePDFs.isEmpty || sourcePDFs.contains(question.sourcePDF))
         }
+    }
+
+    var hewittChapter17Questions: [NSBQuestion] {
+        questions.filter { $0.sourcePDF == "Hewitt-Ch17" }
+    }
+
+    private func mergeBundled(into base: [NSBQuestion]) -> [NSBQuestion] {
+        let bundled = BundledQuestionLoader.loadAll()
+        guard !bundled.isEmpty else { return base }
+        let existing = Set(base.map(\.id))
+        return base + bundled.filter { !existing.contains($0.id) }
+    }
+
+    func questions(subjects: Set<Subject>, rounds: Set<String> = []) -> [NSBQuestion] {
+        filteredQuestions(subjects: subjects, rounds: rounds)
+    }
+
+    func questions(matchingTopicIDs topicIDs: Set<String>, otherSubjects: Set<Subject> = []) -> [NSBQuestion] {
+        guard !topicIDs.isEmpty || !otherSubjects.isEmpty else { return [] }
+        var seen = Set<UUID>()
+        var result: [NSBQuestion] = []
+
+        for topicID in topicIDs {
+            guard let topic = TopicCatalog.topic(id: topicID) else { continue }
+            for question in questions where topic.matches(question) {
+                if seen.insert(question.id).inserted {
+                    result.append(question)
+                }
+            }
+        }
+
+        if !otherSubjects.isEmpty {
+            for question in questions where otherSubjects.contains(question.subject) {
+                if seen.insert(question.id).inserted {
+                    result.append(question)
+                }
+            }
+        }
+        return result
+    }
+
+    func count(for topicID: String) -> Int {
+        guard let topic = TopicCatalog.topic(id: topicID) else { return 0 }
+        return questions.filter { topic.matches($0) }.count
     }
 
     func question(withID id: UUID) -> NSBQuestion? {

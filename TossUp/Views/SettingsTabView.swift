@@ -20,6 +20,13 @@ struct SettingsTabView: View {
                 TextField("Name", text: $settings.studentName)
             }
 
+            Section("Learning") {
+                Toggle("Detailed answer explanations", isOn: $settings.showDetailedExplanations)
+                Text("Multi-paragraph tutor-style explanations: topic context, why the answer is correct, review of all choices, and study tips — generated instantly offline.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section("Quiz defaults") {
                 Picker("Timer preset", selection: Binding(
                     get: { settings.timerPreset },

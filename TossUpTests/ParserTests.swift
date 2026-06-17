@@ -63,6 +63,67 @@ final class ParserTests: XCTestCase {
         XCTAssertEqual(subject, .chemistry)
     }
 
+    func testAIStyleExplanationLength() {
+        let question = NSBQuestion(
+            subject: .biology,
+            round: "Toss-Up Round 1",
+            type: .multipleChoice,
+            questionText: "Which of the following best describes a scientific law?",
+            choices: [
+                "W) A proposed explanation for a narrow set of phenomena",
+                "X) Broad explanations for a wide range of phenomena",
+                "Y) A statement that is verified by observation and describes how phenomena are related",
+                "Z) An opinion based on observations of phenomena",
+            ],
+            correctAnswer: "Y",
+            sourcePDF: "test.pdf"
+        )
+
+        let explanation = AIStyleExplainer.longExplanation(for: question, userAnswer: "W", wasCorrect: false)
+        XCTAssertGreaterThan(explanation.count, 200)
+        XCTAssertTrue(explanation.contains("scientific law") || explanation.contains("Biology"))
+        XCTAssertTrue(explanation.contains("\n\n"))
+    }
+
+    func testAnswerExplainerMultipleChoiceWrong() {
+        let question = NSBQuestion(
+            subject: .biology,
+            round: "Toss-Up Round 1",
+            type: .multipleChoice,
+            questionText: "Which organelle produces most ATP in eukaryotic cells?",
+            choices: [
+                "W) Nucleus",
+                "X) Ribosome",
+                "Y) Mitochondrion",
+                "Z) Golgi apparatus",
+            ],
+            correctAnswer: "Y",
+            sourcePDF: "test.pdf"
+        )
+
+        let feedback = AnswerExplainer.feedback(for: question, userAnswer: "W", wasCorrect: false)
+        XCTAssertFalse(feedback.wasCorrect)
+        XCTAssertTrue(feedback.correctAnswerDisplay.contains("Mitochondrion"))
+        XCTAssertTrue(feedback.explanation.contains("Mitochondrion"))
+        XCTAssertNotNil(feedback.userAnswerDisplay)
+    }
+
+    func testAnswerExplainerShortAnswerMath() {
+        let question = NSBQuestion(
+            subject: .math,
+            round: "Toss-Up Round 1",
+            type: .shortAnswer,
+            questionText: "What is 12 times 8?",
+            choices: nil,
+            correctAnswer: "96",
+            sourcePDF: "test.pdf"
+        )
+
+        let feedback = AnswerExplainer.feedback(for: question, userAnswer: "96", wasCorrect: true)
+        XCTAssertTrue(feedback.wasCorrect)
+        XCTAssertTrue(feedback.explanation.contains("96"))
+    }
+
     func testBundledSamplePDFIfPresent() async throws {
         let urls = await MainActor.run { QuestionBank.shared.discoverBundledPDFs() }
         guard let first = urls.first else {

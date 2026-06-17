@@ -25,6 +25,18 @@
 		TUB017 /* AppLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF017 /* AppLayout.swift */; };
 		TUB018 /* SpeechManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF018 /* SpeechManager.swift */; };
 		TUB019 /* SpeechTextSanitizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF019 /* SpeechTextSanitizer.swift */; };
+		TUB020 /* BundledQuestionLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF020 /* BundledQuestionLoader.swift */; };
+		TUB021 /* AnswerExplainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF021 /* AnswerExplainer.swift */; };
+		TUB022 /* AIStyleExplainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF022 /* AIStyleExplainer.swift */; };
+		TUB023 /* QuestionDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF023 /* QuestionDisplay.swift */; };
+		TUB024 /* AnswerFeedbackCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF024 /* AnswerFeedbackCard.swift */; };
+		TUB025 /* TopicCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF025 /* TopicCatalog.swift */; };
+		TUB026 /* TopicPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF026 /* TopicPickerView.swift */; };
+		TUB102 /* hewitt_ch17_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF102 /* hewitt_ch17_questions.json */; };
+		TUB103 /* bio_cells_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF103 /* bio_cells_questions.json */; };
+		TUB104 /* bio_bundled_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF104 /* bio_bundled_questions.json */; };
+		TUB105 /* chem_bundled_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF105 /* chem_bundled_questions.json */; };
+		TUB106 /* math_bundled_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF106 /* math_bundled_questions.json */; };
 		TUB100 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = TUF100 /* Assets.xcassets */; };
 		TUB101 /* NSB_PDFs in Resources */ = {isa = PBXBuildFile; fileRef = TUF101 /* NSB_PDFs */; };
 		TUB200 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF200 /* ParserTests.swift */; };
@@ -62,6 +74,18 @@
 		TUF017 /* AppLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLayout.swift; sourceTree = "<group>"; };
 		TUF018 /* SpeechManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechManager.swift; sourceTree = "<group>"; };
 		TUF019 /* SpeechTextSanitizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTextSanitizer.swift; sourceTree = "<group>"; };
+		TUF020 /* BundledQuestionLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledQuestionLoader.swift; sourceTree = "<group>"; };
+		TUF021 /* AnswerExplainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerExplainer.swift; sourceTree = "<group>"; };
+		TUF022 /* AIStyleExplainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStyleExplainer.swift; sourceTree = "<group>"; };
+		TUF023 /* QuestionDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionDisplay.swift; sourceTree = "<group>"; };
+		TUF024 /* AnswerFeedbackCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerFeedbackCard.swift; sourceTree = "<group>"; };
+		TUF025 /* TopicCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicCatalog.swift; sourceTree = "<group>"; };
+		TUF026 /* TopicPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicPickerView.swift; sourceTree = "<group>"; };
+		TUF102 /* hewitt_ch17_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = hewitt_ch17_questions.json; sourceTree = "<group>"; };
+		TUF103 /* bio_cells_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bio_cells_questions.json; sourceTree = "<group>"; };
+		TUF104 /* bio_bundled_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bio_bundled_questions.json; sourceTree = "<group>"; };
+		TUF105 /* chem_bundled_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = chem_bundled_questions.json; sourceTree = "<group>"; };
+		TUF106 /* math_bundled_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = math_bundled_questions.json; sourceTree = "<group>"; };
 		TUF100 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		TUF101 /* NSB_PDFs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = NSB_PDFs; sourceTree = "<group>"; };
 		TUF200 /* ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
@@ -100,10 +124,12 @@
 			children = (
 				TUF001 /* TossUpApp.swift */,
 				TUG010 /* Models */,
+				TUG015 /* Data */,
 				TUG011 /* Services */,
 				TUG012 /* ViewModels */,
 				TUG013 /* Views */,
 				TUG016 /* Helpers */,
+				TUG017 /* Resources */,
 				TUF100 /* Assets.xcassets */,
 			);
 			path = TossUp;
@@ -142,6 +168,9 @@
 				TUF005 /* PDFParser.swift */,
 				TUF006 /* QuestionBank.swift */,
 				TUF007 /* SettingsStore.swift */,
+				TUF020 /* BundledQuestionLoader.swift */,
+				TUF021 /* AnswerExplainer.swift */,
+				TUF022 /* AIStyleExplainer.swift */,
 				TUF018 /* SpeechManager.swift */,
 				TUF019 /* SpeechTextSanitizer.swift */,
 			);
@@ -175,6 +204,8 @@
 			isa = PBXGroup;
 			children = (
 				TUF016 /* SharedComponents.swift */,
+				TUF024 /* AnswerFeedbackCard.swift */,
+				TUF026 /* TopicPickerView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -183,8 +214,29 @@
 			isa = PBXGroup;
 			children = (
 				TUF017 /* AppLayout.swift */,
+				TUF023 /* QuestionDisplay.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		TUG015 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				TUF025 /* TopicCatalog.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		TUG017 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				TUF102 /* hewitt_ch17_questions.json */,
+				TUF103 /* bio_cells_questions.json */,
+				TUF104 /* bio_bundled_questions.json */,
+				TUF105 /* chem_bundled_questions.json */,
+				TUF106 /* math_bundled_questions.json */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -261,6 +313,11 @@
 			files = (
 				TUB100 /* Assets.xcassets in Resources */,
 				TUB101 /* NSB_PDFs in Resources */,
+				TUB102 /* hewitt_ch17_questions.json in Resources */,
+				TUB103 /* bio_cells_questions.json in Resources */,
+				TUB104 /* bio_bundled_questions.json in Resources */,
+				TUB105 /* chem_bundled_questions.json in Resources */,
+				TUB106 /* math_bundled_questions.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,6 +354,13 @@
 				TUB017 /* AppLayout.swift in Sources */,
 				TUB018 /* SpeechManager.swift in Sources */,
 				TUB019 /* SpeechTextSanitizer.swift in Sources */,
+				TUB020 /* BundledQuestionLoader.swift in Sources */,
+				TUB021 /* AnswerExplainer.swift in Sources */,
+				TUB022 /* AIStyleExplainer.swift in Sources */,
+				TUB023 /* QuestionDisplay.swift in Sources */,
+				TUB024 /* AnswerFeedbackCard.swift in Sources */,
+				TUB025 /* TopicCatalog.swift in Sources */,
+				TUB026 /* TopicPickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

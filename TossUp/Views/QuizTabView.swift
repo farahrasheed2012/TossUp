@@ -10,7 +10,7 @@ struct QuizTabView: View {
         Group {
             switch viewModel.phase {
             case .setup:
-                QuizSetupView(viewModel: viewModel, questionCount: bank.questions.count) {
+                QuizSetupView(viewModel: viewModel, bank: bank) {
                     viewModel.startSession(from: bank)
                 }
             case .inProgress, .feedback:
@@ -26,6 +26,17 @@ struct QuizTabView: View {
         .navigationTitle("Quiz")
     }
 
+    private var sessionSubjects: [Subject] {
+        var subjects = Set<Subject>()
+        for id in viewModel.selectedTopicIDs {
+            if let topic = TopicCatalog.topic(id: id) {
+                subjects.insert(topic.subject)
+            }
+        }
+        subjects.formUnion(viewModel.selectedSimpleSubjects)
+        return Array(subjects).sorted { $0.rawValue < $1.rawValue }
+    }
+
     private func persistSession() {
         let summary = viewModel.scoreSummary
         let attempts = viewModel.results.map { result in
@@ -36,7 +47,7 @@ struct QuizTabView: View {
             )
         }
         let session = QuizSessionRecord(
-            subjects: Array(viewModel.selectedSubjects),
+            subjects: sessionSubjects,
             totalQuestions: summary.total,
             correctCount: summary.correct,
             attempts: attempts
@@ -51,8 +62,15 @@ struct QuizTabView: View {
 
 struct QuizSetupView: View {
     @ObservedObject var viewModel: QuizViewModel
-    let questionCount: Int
+    @ObservedObject var bank: QuestionBank
     let onStart: () -> Void
+
+    private var availableCount: Int {
+        bank.questions(
+            matchingTopicIDs: viewModel.selectedTopicIDs,
+            otherSubjects: viewModel.selectedSimpleSubjects
+        ).count
+    }
 
     var body: some View {
         ScrollView {
@@ -60,41 +78,46 @@ struct QuizSetupView: View {
                 EncouragingHeader(name: SettingsStore.shared.studentName)
                     .cardStyle()
 
-                SectionCard(title: "Subjects") {
-                    VStack(spacing: 8) {
-                        ForEach(Subject.allCases) { subject in
-                            Toggle(isOn: binding(for: subject)) {
-                                HStack(spacing: 8) {
-                                    Text(subject.emoji)
-                                    Text(subject.displayName)
+                SectionCard(title: "Topics") {
+                    TopicPickerView(
+                        selectedTopicIDs: $viewModel.selectedTopicIDs,
+                        selectedSimpleSubjects: $viewModel.selectedSimpleSubjects,
+                        bank: bank
+                    )
+                }
+
+                SectionCard(title: "Session") {
+                    VStack(alignment: .leading, spacing: 14) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Length")
+                                .font(.subheadline.weight(.medium))
+                            Picker("Questions", selection: $viewModel.quizLength) {
+                                ForEach(QuizLength.allCases) { length in
+                                    Text(length.label).tag(length)
                                 }
                             }
-                            .toggleStyle(.switch)
+                            .pickerStyle(.segmented)
                         }
-                    }
-                }
 
-                SectionCard(title: "Session size") {
-                    Picker("Questions", selection: $viewModel.quizLength) {
-                        ForEach(QuizLength.allCases) { length in
-                            Text(length.label).tag(length)
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Timer")
+                                .font(.subheadline.weight(.medium))
+                            Picker("Timer", selection: $viewModel.timerPreset) {
+                                ForEach(TimerPreset.allCases) { preset in
+                                    Text(preset.label).tag(preset)
+                                }
+                            }
+                            #if os(macOS)
+                            .pickerStyle(.menu)
+                            #else
+                            .pickerStyle(.segmented)
+                            #endif
                         }
-                    }
-                    .pickerStyle(.segmented)
-                    Text("\(questionCount) questions loaded from PDFs")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
 
-                SectionCard(title: "Time per question") {
-                    Picker("Timer", selection: $viewModel.timerPreset) {
-                        ForEach(TimerPreset.allCases) { preset in
-                            Text(preset.label).tag(preset)
-                        }
+                        Text("\(availableCount) questions available")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
-                    #if os(macOS)
-                    .pickerStyle(.menu)
-                    #endif
                 }
 
                 Button(action: onStart) {
@@ -105,30 +128,18 @@ struct QuizSetupView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
-                .disabled(viewModel.selectedSubjects.isEmpty || questionCount == 0)
+                .disabled(availableCount == 0)
             }
             .padding(24)
             .contentColumn()
         }
         .background(AppTheme.pageBackground)
     }
-
-    private func binding(for subject: Subject) -> Binding<Bool> {
-        Binding(
-            get: { viewModel.selectedSubjects.contains(subject) },
-            set: { enabled in
-                if enabled {
-                    viewModel.selectedSubjects.insert(subject)
-                } else {
-                    viewModel.selectedSubjects.remove(subject)
-                }
-            }
-        )
-    }
 }
 
 struct QuizSummaryView: View {
     @ObservedObject var viewModel: QuizViewModel
+    @ObservedObject private var settings = SettingsStore.shared
     let bank: QuestionBank
     let onDone: () -> Void
 
@@ -143,17 +154,44 @@ struct QuizSummaryView: View {
                 let summary = viewModel.scoreSummary
                 Text("\(summary.correct) of \(summary.total) correct")
                     .font(.title3)
+                if summary.skipped > 0 {
+                    Text("\(summary.skipped) skipped")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
 
                 if !viewModel.missedQuestions(in: bank).isEmpty {
                     SectionCard(title: "Review missed questions") {
                         VStack(spacing: 10) {
                             ForEach(viewModel.results.filter { !$0.wasCorrect }) { item in
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(item.question.questionText)
-                                        .font(.subheadline)
-                                    Text("Correct: \(item.question.correctAnswer)")
-                                        .font(.caption)
-                                        .foregroundStyle(AppTheme.accent)
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Text(item.question.questionText)
+                                            .font(.subheadline)
+                                        if item.wasSkipped {
+                                            Text("Skipped")
+                                                .font(.caption2.weight(.semibold))
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 2)
+                                                .background(Color.orange.opacity(0.2))
+                                                .clipShape(Capsule())
+                                        }
+                                    }
+                                    if settings.showDetailedExplanations {
+                                        AnswerFeedbackCard(
+                                            feedback: AnswerExplainer.feedback(
+                                                for: item.question,
+                                                userAnswer: item.wasSkipped ? "" : item.userAnswer,
+                                                wasCorrect: false,
+                                                wasSkipped: item.wasSkipped
+                                            ),
+                                            showHeadline: false
+                                        )
+                                    } else {
+                                        Text("Correct: \(item.question.correctAnswer)")
+                                            .font(.caption)
+                                            .foregroundStyle(AppTheme.accent)
+                                    }
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }

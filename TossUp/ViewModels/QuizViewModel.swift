@@ -13,13 +13,19 @@ struct QuizResultItem: Identifiable {
     let question: NSBQuestion
     let userAnswer: String
     let wasCorrect: Bool
+    let wasSkipped: Bool
     let timeToAnswer: TimeInterval
 }
 
 @MainActor
 final class QuizViewModel: ObservableObject {
     @Published var phase: QuizPhase = .setup
-    @Published var selectedSubjects: Set<Subject> = SettingsStore.shared.enabledSubjects
+    @Published var selectedTopicIDs: Set<String> = TopicCatalog.normalizedTopicIDs([
+        TopicCatalog.allTopicID(for: .chemistry),
+        TopicCatalog.allTopicID(for: .biology),
+        TopicCatalog.allTopicID(for: .math),
+    ])
+    @Published var selectedSimpleSubjects: Set<Subject> = []
     @Published var quizLength: QuizLength = SettingsStore.shared.defaultQuizLength
     @Published var timerPreset: TimerPreset = SettingsStore.shared.timerPreset
 
@@ -29,6 +35,8 @@ final class QuizViewModel: ObservableObject {
     @Published private(set) var results: [QuizResultItem] = []
     @Published private(set) var lastFeedbackCorrect = false
     @Published private(set) var lastCorrectAnswer = ""
+    @Published private(set) var lastFeedback: AnswerFeedback?
+    @Published private(set) var lastUserAnswer = ""
     @Published var shortAnswerText = ""
 
     private var questionStartedAt = Date()
@@ -44,16 +52,20 @@ final class QuizViewModel: ObservableObject {
         return "\(currentIndex + 1) / \(sessionQuestions.count)"
     }
 
-    var scoreSummary: (correct: Int, total: Int, percent: Double) {
+    var scoreSummary: (correct: Int, total: Int, skipped: Int, percent: Double) {
         let correct = results.filter(\.wasCorrect).count
+        let skipped = results.filter(\.wasSkipped).count
         let total = results.count
         let percent = total == 0 ? 0 : Double(correct) / Double(total)
-        return (correct, total, percent)
+        return (correct, total, skipped, percent)
     }
 
     func startSession(from bank: QuestionBank) {
         timerTask?.cancel()
-        let pool = bank.questions(subjects: selectedSubjects)
+        let pool = bank.questions(
+            matchingTopicIDs: selectedTopicIDs,
+            otherSubjects: selectedSimpleSubjects
+        )
         guard !pool.isEmpty else { return }
 
         let count: Int
@@ -69,7 +81,7 @@ final class QuizViewModel: ObservableObject {
         results = []
         phase = .inProgress
         shortAnswerText = ""
-        beginQuestionTimer()
+        prepareCurrentQuestion()
     }
 
     func submitMultipleChoice(_ letter: Character) {
@@ -80,6 +92,21 @@ final class QuizViewModel: ObservableObject {
     func submitShortAnswer() {
         guard phase == .inProgress, let question = currentQuestion else { return }
         gradeAnswer(shortAnswerText, for: question)
+    }
+
+    /// Skip the current question — counts as incorrect and shows the explanation.
+    func skipQuestion() {
+        guard phase == .inProgress, let question = currentQuestion else { return }
+        SpeechManager.shared.stop()
+        gradeAnswer("", for: question, skipped: true)
+    }
+
+    /// End the quiz early and jump to the session summary.
+    func endSessionEarly() {
+        timerTask?.cancel()
+        SpeechManager.shared.stop()
+        remainingSeconds = nil
+        phase = .summary
     }
 
     func skipTimerAndSubmitEmpty() {
@@ -96,6 +123,21 @@ final class QuizViewModel: ObservableObject {
         } else {
             currentIndex += 1
             phase = .inProgress
+            prepareCurrentQuestion()
+        }
+    }
+
+    /// Called after read-aloud finishes; starts the countdown if it has not begun yet.
+    func startQuestionTimerAfterReadAloud() {
+        guard phase == .inProgress, remainingSeconds == nil else { return }
+        beginQuestionTimer()
+    }
+
+    private func prepareCurrentQuestion() {
+        timerTask?.cancel()
+        remainingSeconds = nil
+        questionStartedAt = Date()
+        if !SettingsStore.shared.readQuestionsAloud {
             beginQuestionTimer()
         }
     }
@@ -113,18 +155,24 @@ final class QuizViewModel: ObservableObject {
         results.filter { !$0.wasCorrect }.compactMap { bank.question(withID: $0.question.id) }
     }
 
-    private func gradeAnswer(_ answer: String, for question: NSBQuestion) {
+    private func gradeAnswer(_ answer: String, for question: NSBQuestion, skipped: Bool = false) {
         timerTask?.cancel()
+        SpeechManager.shared.stop()
         let elapsed = Date().timeIntervalSince(questionStartedAt)
-        let correct = AnswerNormalizer.matches(user: answer, correct: question.correctAnswer)
+        let correct = !skipped && AnswerNormalizer.matches(user: answer, correct: question.correctAnswer)
         lastFeedbackCorrect = correct
         lastCorrectAnswer = question.correctAnswer
+        lastUserAnswer = skipped ? "" : answer
+        lastFeedback = SettingsStore.shared.showDetailedExplanations
+            ? AnswerExplainer.feedback(for: question, userAnswer: answer, wasCorrect: correct, wasSkipped: skipped)
+            : nil
         results.append(
             QuizResultItem(
                 id: UUID(),
                 question: question,
-                userAnswer: answer,
+                userAnswer: skipped ? "(skipped)" : answer,
                 wasCorrect: correct,
+                wasSkipped: skipped,
                 timeToAnswer: elapsed
             )
         )
@@ -133,7 +181,6 @@ final class QuizViewModel: ObservableObject {
     }
 
     private func beginQuestionTimer() {
-        questionStartedAt = Date()
         guard let question = currentQuestion else { return }
         remainingSeconds = timerPreset.seconds(for: question.type)
         timerTask?.cancel()

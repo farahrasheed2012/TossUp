@@ -2,16 +2,25 @@ import SwiftUI
 
 struct StudyView: View {
     @EnvironmentObject private var bank: QuestionBank
-    @State private var selectedSubject: Subject?
+    @State private var selectedTopicIDs: Set<String> = TopicCatalog.normalizedTopicIDs([
+        TopicCatalog.allTopicID(for: .chemistry),
+        TopicCatalog.allTopicID(for: .biology),
+        TopicCatalog.allTopicID(for: .math),
+    ])
+    @State private var selectedSimpleSubjects: Set<Subject> = []
     @State private var searchText = ""
+    @State private var showTopicFilter = false
 
     private var filteredQuestions: [NSBQuestion] {
-        bank.questions.filter { question in
-            let subjectOK = selectedSubject.map { question.subject == $0 } ?? true
-            let searchOK = searchText.isEmpty ||
-                question.questionText.localizedCaseInsensitiveContains(searchText) ||
-                question.round.localizedCaseInsensitiveContains(searchText)
-            return subjectOK && searchOK
+        let topicPool = bank.questions(
+            matchingTopicIDs: selectedTopicIDs,
+            otherSubjects: selectedSimpleSubjects
+        )
+        guard !searchText.isEmpty else { return topicPool }
+        return topicPool.filter { question in
+            question.questionText.localizedCaseInsensitiveContains(searchText) ||
+                question.displayTopicLabel.localizedCaseInsensitiveContains(searchText) ||
+                question.displayContextLabel.localizedCaseInsensitiveContains(searchText)
         }
     }
 
@@ -38,15 +47,8 @@ struct StudyView: View {
                 )
             } else {
                 VStack(spacing: 0) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        EncouragingHeader(name: SettingsStore.shared.studentName)
-                        SubjectFilterBar(selectedSubject: $selectedSubject)
-                    }
-                    .padding()
-                    .background(AppTheme.cardBackground)
-
                     List {
-                        Section("\(filteredQuestions.count) questions") {
+                        Section {
                             ForEach(filteredQuestions.prefix(500)) { question in
                                 NavigationLink {
                                     QuestionDetailView(question: question)
@@ -54,6 +56,18 @@ struct StudyView: View {
                                     QuestionRow(question: question)
                                 }
                             }
+                        } header: {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("\(filteredQuestions.count) questions")
+                                Text(TopicCatalog.compactSummary(
+                                    topicIDs: selectedTopicIDs,
+                                    simpleSubjects: selectedSimpleSubjects
+                                ))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            }
+                            .textCase(nil)
+                            .padding(.bottom, 4)
                         }
                     }
                     #if os(macOS)
@@ -65,6 +79,24 @@ struct StudyView: View {
         .background(AppTheme.pageBackground)
         .navigationTitle("Study")
         .searchable(text: $searchText, prompt: "Search questions")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showTopicFilter = true
+                } label: {
+                    Label("Topics", systemImage: "line.3.horizontal.decrease.circle")
+                }
+            }
+        }
+        .sheet(isPresented: $showTopicFilter) {
+            TopicPickerView(
+                selectedTopicIDs: $selectedTopicIDs,
+                selectedSimpleSubjects: $selectedSimpleSubjects,
+                bank: bank,
+                showsFilterChrome: true,
+                onDismiss: { showTopicFilter = false }
+            )
+        }
     }
 }
 
@@ -85,7 +117,7 @@ private struct QuestionRow: View {
             Text(question.questionText)
                 .font(.body)
                 .lineLimit(3)
-            Text(question.round)
+            Text(question.displayContextLabel)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
@@ -113,7 +145,7 @@ struct QuestionDetailView: View {
                     .buttonStyle(.bordered)
                 }
 
-                Text(question.round)
+                Text(question.displayContextLabel)
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
@@ -130,9 +162,26 @@ struct QuestionDetailView: View {
                     }
                 }
 
-                Text("Answer: \(question.correctAnswer)")
+                Text("Answer: \(AnswerExplainer.displayCorrectAnswer(for: question))")
                     .font(.headline)
                     .foregroundStyle(AppTheme.accent)
+
+                if settings.showDetailedExplanations {
+                    AnswerFeedbackCard(
+                        feedback: AnswerExplainer.feedback(
+                            for: question,
+                            userAnswer: question.correctAnswer,
+                            wasCorrect: true
+                        ),
+                        showHeadline: false
+                    )
+                }
+
+                if let topic = question.resolvedTopicID.flatMap({ TopicCatalog.topic(id: $0)?.name }) {
+                    Text("Topic: \(topic)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
 
                 Text("Source: \(question.sourcePDF)")
                     .font(.caption)
