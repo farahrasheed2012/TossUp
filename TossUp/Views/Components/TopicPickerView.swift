@@ -236,6 +236,8 @@ private struct SubjectTopicsListView: View {
     let bank: QuestionBank
     let showCounts: Bool
 
+    @State private var expandedTopicIDs: Set<String> = []
+
     private var allTopicID: String { TopicCatalog.allTopicID(for: subject) }
 
     var body: some View {
@@ -249,13 +251,7 @@ private struct SubjectTopicsListView: View {
                 if children.isEmpty {
                     topicRow(topic)
                 } else {
-                    DisclosureGroup {
-                        ForEach(children) { child in
-                            topicRow(child, indented: true)
-                        }
-                    } label: {
-                        topicLabel(topic)
-                    }
+                    expandableTopicGroup(topic: topic, children: children)
                 }
             }
         }
@@ -269,6 +265,50 @@ private struct SubjectTopicsListView: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button("Select all") { selectAll() }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func expandableTopicGroup(topic: QuizTopic, children: [QuizTopic]) -> some View {
+        let isExpanded = expandedTopicIDs.contains(topic.id)
+
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 4) {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        if isExpanded {
+                            expandedTopicIDs.remove(topic.id)
+                        } else {
+                            expandedTopicIDs.insert(topic.id)
+                        }
+                    }
+                } label: {
+                    Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(width: 28, height: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(isExpanded ? "Collapse sections" : "Expand sections")
+
+                Button {
+                    toggle(topic)
+                } label: {
+                    topicLabel(topic)
+                }
+                #if os(macOS)
+                .buttonStyle(.borderless)
+                #else
+                .buttonStyle(.plain)
+                #endif
+            }
+
+            if isExpanded {
+                ForEach(children) { child in
+                    topicRow(child, indented: true)
+                }
             }
         }
     }
