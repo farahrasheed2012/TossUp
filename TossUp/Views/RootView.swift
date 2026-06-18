@@ -35,6 +35,7 @@ struct RootView: View {
     @EnvironmentObject private var xp: XPManager
     #if os(macOS)
     @State private var selection: AppSection = .quiz
+    @State private var miniGameCapturesKeyboard = false
     #else
     @State private var selection = 2
     #endif
@@ -47,6 +48,7 @@ struct RootView: View {
                     .tag(section)
             }
             .listStyle(.sidebar)
+            .focusable(!miniGameCapturesKeyboard)
             .navigationTitle("TossUp")
             .navigationSplitViewColumnWidth(min: 200, ideal: 220, max: 260)
         } detail: {
@@ -57,6 +59,7 @@ struct RootView: View {
             .gamePageBackground()
         }
         .navigationSplitViewStyle(.balanced)
+        .onPreferenceChange(MiniGameKeyboardCaptureKey.self) { miniGameCapturesKeyboard = $0 }
         .onReceive(NotificationCenter.default.publisher(for: .startNewQuiz)) { _ in
             selection = .quiz
         }

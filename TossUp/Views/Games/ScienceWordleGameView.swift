@@ -39,21 +39,8 @@ struct ScienceWordleGameView: View {
             DrillFlashOverlay(color: flashColor)
         }
         #if os(macOS)
-        .focusable()
-        .onAppear { inputFocused = true }
-        .onKeyPress(.return) {
-            submitGuess()
-            return .handled
-        }
-        .onKeyPress(.delete) {
-            deleteLetter()
-            return .handled
-        }
-        .onKeyPress(characters: CharacterSet.letters) { press in
-            guard let ch = press.characters.uppercased().first else { return .ignored }
-            appendLetter(ch)
-            return .handled
-        }
+        .onAppear { focusTypingField() }
+        .onKeyPress(.escape) { .handled }
         #endif
     }
 
@@ -293,7 +280,16 @@ struct ScienceWordleGameView: View {
         isFinished = false
         didWin = false
         #if os(macOS)
-        inputFocused = true
+        focusTypingField()
         #endif
     }
+
+    #if os(macOS)
+    private func focusTypingField() {
+        inputFocused = true
+        DispatchQueue.main.async {
+            inputFocused = true
+        }
+    }
+    #endif
 }

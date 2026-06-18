@@ -1,5 +1,19 @@
 import SwiftUI
 
+/// When true, a pushed mini-game is active and the macOS sidebar must not receive letter keys.
+struct MiniGameKeyboardCaptureKey: PreferenceKey {
+    static var defaultValue = false
+    static func reduce(value: inout Bool, nextValue: () -> Bool) {
+        value = value || nextValue()
+    }
+}
+
+extension View {
+    func capturesMiniGameKeyboard() -> some View {
+        preference(key: MiniGameKeyboardCaptureKey.self, value: true)
+    }
+}
+
 struct MiniGamesHubView: View {
     var body: some View {
         ScrollView {
@@ -50,18 +64,21 @@ struct MiniGameDestinationView: View {
     let game: MiniGameID
 
     var body: some View {
-        switch game {
-        case .scienceWordle:
-            ScienceWordleGameView()
-        case .trueOrFalseBlitz:
-            TrueOrFalseBlitzGameView()
-        case .elementBlitz:
-            ElementBlitzGameView()
-        case .moleculeMatch:
-            MoleculeMatchGameView()
-        case .cellBuilder:
-            CellBuilderGameView()
+        Group {
+            switch game {
+            case .scienceWordle:
+                ScienceWordleGameView()
+            case .trueOrFalseBlitz:
+                TrueOrFalseBlitzGameView()
+            case .elementBlitz:
+                ElementBlitzGameView()
+            case .moleculeMatch:
+                MoleculeMatchGameView()
+            case .cellBuilder:
+                CellBuilderGameView()
+            }
         }
+        .capturesMiniGameKeyboard()
     }
 }
 
