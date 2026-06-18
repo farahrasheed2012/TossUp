@@ -51,11 +51,20 @@ xcodebuild -scheme TossUp -destination 'platform=macOS' test
 
 First launch parses bundled PDFs into `~/Library/Application Support/TossUp/questions_cache.json`. Re-parses only when PDF fingerprints change. Parse errors append to `parse_errors.log` in the same folder.
 
+## Cursor prompts (reference)
+
+| File | Purpose |
+|------|---------|
+| `TOPICS_FOR_CLAUDE.md` | Topic IDs and JSON format for bundled question generation |
+| `CURSOR_PROMPT_ScienceBowlCoach_UX_Redesign.md` | Full UX overhaul spec for **Science Bowl Coach** (`../ScienceBowlCoach/`) — dark mode, XP/streak, buzzer drill, study session redesign |
+
 ## Project layout
 
 ```
 TossUp/
   download_nsb_pdfs.py      # Phase 1 — PDF downloader
+  TOPICS_FOR_CLAUDE.md      # Question-generation topic IDs
+  CURSOR_PROMPT_ScienceBowlCoach_UX_Redesign.md
   NSB_PDFs/                 # Downloaded PDFs (not all committed)
   TossUp/
     Models/NSBQuestion.swift
