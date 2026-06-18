@@ -193,6 +193,7 @@ struct QuizSetupView: View {
         viewModel.quizLength = QuizLength(rawValue: count) ?? .five
         onStart()
     }
+
 }
 
 struct QuizSummaryView: View {

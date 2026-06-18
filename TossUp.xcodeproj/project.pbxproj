@@ -36,6 +36,15 @@
 		TUB028 /* XPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF028 /* XPManager.swift */; };
 		TUB029 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF029 /* HapticManager.swift */; };
 		TUB030 /* BuzzerDrillComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF030 /* BuzzerDrillComponents.swift */; };
+		TUB031 /* ElementCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF031 /* ElementCatalog.swift */; };
+		TUB032 /* MiniGameContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF032 /* MiniGameContent.swift */; };
+		TUB033 /* MiniGameID.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF033 /* MiniGameID.swift */; };
+		TUB034 /* MiniGamesHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF034 /* MiniGamesHubView.swift */; };
+		TUB035 /* ScienceWordleGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF035 /* ScienceWordleGameView.swift */; };
+		TUB036 /* TrueOrFalseBlitzGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF036 /* TrueOrFalseBlitzGameView.swift */; };
+		TUB037 /* ElementBlitzGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF037 /* ElementBlitzGameView.swift */; };
+		TUB038 /* MoleculeMatchGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF038 /* MoleculeMatchGameView.swift */; };
+		TUB039 /* CellBuilderGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF039 /* CellBuilderGameView.swift */; };
 		TUB102 /* hewitt_ch17_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF102 /* hewitt_ch17_questions.json */; };
 		TUB103 /* bio_cells_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF103 /* bio_cells_questions.json */; };
 		TUB104 /* bio_bundled_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF104 /* bio_bundled_questions.json */; };
@@ -89,6 +98,15 @@
 		TUF028 /* XPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPManager.swift; sourceTree = "<group>"; };
 		TUF029 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		TUF030 /* BuzzerDrillComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuzzerDrillComponents.swift; sourceTree = "<group>"; };
+		TUF031 /* ElementCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementCatalog.swift; sourceTree = "<group>"; };
+		TUF032 /* MiniGameContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameContent.swift; sourceTree = "<group>"; };
+		TUF033 /* MiniGameID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameID.swift; sourceTree = "<group>"; };
+		TUF034 /* MiniGamesHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGamesHubView.swift; sourceTree = "<group>"; };
+		TUF035 /* ScienceWordleGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScienceWordleGameView.swift; sourceTree = "<group>"; };
+		TUF036 /* TrueOrFalseBlitzGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrueOrFalseBlitzGameView.swift; sourceTree = "<group>"; };
+		TUF037 /* ElementBlitzGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementBlitzGameView.swift; sourceTree = "<group>"; };
+		TUF038 /* MoleculeMatchGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoleculeMatchGameView.swift; sourceTree = "<group>"; };
+		TUF039 /* CellBuilderGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellBuilderGameView.swift; sourceTree = "<group>"; };
 		TUF102 /* hewitt_ch17_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = hewitt_ch17_questions.json; sourceTree = "<group>"; };
 		TUF103 /* bio_cells_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bio_cells_questions.json; sourceTree = "<group>"; };
 		TUF104 /* bio_bundled_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bio_bundled_questions.json; sourceTree = "<group>"; };
@@ -199,6 +217,7 @@
 			isa = PBXGroup;
 			children = (
 				TUG014 /* Components */,
+				TUG018 /* Games */,
 				TUF010 /* RootView.swift */,
 				TUF011 /* StudyView.swift */,
 				TUF012 /* QuizTabView.swift */,
@@ -235,8 +254,24 @@
 			isa = PBXGroup;
 			children = (
 				TUF025 /* TopicCatalog.swift */,
+				TUF031 /* ElementCatalog.swift */,
+				TUF032 /* MiniGameContent.swift */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		TUG018 /* Games */ = {
+			isa = PBXGroup;
+			children = (
+				TUF033 /* MiniGameID.swift */,
+				TUF034 /* MiniGamesHubView.swift */,
+				TUF035 /* ScienceWordleGameView.swift */,
+				TUF036 /* TrueOrFalseBlitzGameView.swift */,
+				TUF037 /* ElementBlitzGameView.swift */,
+				TUF038 /* MoleculeMatchGameView.swift */,
+				TUF039 /* CellBuilderGameView.swift */,
+			);
+			path = Games;
 			sourceTree = "<group>";
 		};
 		TUG017 /* Resources */ = {
@@ -377,6 +412,15 @@
 				TUB028 /* XPManager.swift in Sources */,
 				TUB029 /* HapticManager.swift in Sources */,
 				TUB030 /* BuzzerDrillComponents.swift in Sources */,
+				TUB031 /* ElementCatalog.swift in Sources */,
+				TUB032 /* MiniGameContent.swift in Sources */,
+				TUB033 /* MiniGameID.swift in Sources */,
+				TUB034 /* MiniGamesHubView.swift in Sources */,
+				TUB035 /* ScienceWordleGameView.swift in Sources */,
+				TUB036 /* TrueOrFalseBlitzGameView.swift in Sources */,
+				TUB037 /* ElementBlitzGameView.swift in Sources */,
+				TUB038 /* MoleculeMatchGameView.swift in Sources */,
+				TUB039 /* CellBuilderGameView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

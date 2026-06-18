@@ -25,12 +25,14 @@ final class XPManager: ObservableObject {
         case tossupCorrect
         case sessionComplete
         case perfectSession
+        case miniGameComplete
 
         var points: Int {
             switch self {
             case .tossupCorrect: return 10
             case .sessionComplete: return 25
             case .perfectSession: return 50
+            case .miniGameComplete: return 20
             }
         }
     }

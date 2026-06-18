@@ -2,6 +2,7 @@ import SwiftUI
 
 enum AppSection: String, CaseIterable, Identifiable, Hashable {
     case study
+    case games
     case quiz
     case progress
     case settings
@@ -11,6 +12,7 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
     var title: String {
         switch self {
         case .study: return "Study"
+        case .games: return "Games"
         case .quiz: return "Drill"
         case .progress: return "Journey"
         case .settings: return "Settings"
@@ -20,6 +22,7 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
     var systemImage: String {
         switch self {
         case .study: return "books.vertical"
+        case .games: return "gamecontroller.fill"
         case .quiz: return "bolt.fill"
         case .progress: return "chart.bar.fill"
         case .settings: return "gearshape"
@@ -33,7 +36,7 @@ struct RootView: View {
     #if os(macOS)
     @State private var selection: AppSection = .quiz
     #else
-    @State private var selection = 1
+    @State private var selection = 2
     #endif
 
     var body: some View {
@@ -49,6 +52,7 @@ struct RootView: View {
         } detail: {
             NavigationStack {
                 detail(for: selection)
+                    .miniGameNavigationDestinations()
             }
             .gamePageBackground()
         }
@@ -62,14 +66,25 @@ struct RootView: View {
         #else
         ZStack(alignment: .bottom) {
             TabView(selection: $selection) {
-                NavigationStack { StudyView() }
-                    .tag(0)
-                NavigationStack { QuizTabView() }
-                    .tag(1)
+                NavigationStack {
+                    StudyView()
+                        .miniGameNavigationDestinations()
+                }
+                .tag(0)
+                NavigationStack {
+                    GamesTabView()
+                        .miniGameNavigationDestinations()
+                }
+                .tag(1)
+                NavigationStack {
+                    QuizTabView()
+                        .miniGameNavigationDestinations()
+                }
+                .tag(2)
                 NavigationStack { ProgressTabView() }
-                    .tag(2)
-                NavigationStack { SettingsTabView() }
                     .tag(3)
+                NavigationStack { SettingsTabView() }
+                    .tag(4)
             }
             .toolbar(.hidden, for: .tabBar)
 
@@ -89,6 +104,8 @@ struct RootView: View {
         switch section {
         case .study:
             StudyView()
+        case .games:
+            GamesTabView()
         case .quiz:
             QuizTabView()
         case .progress:
