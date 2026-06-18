@@ -11,8 +11,8 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
     var title: String {
         switch self {
         case .study: return "Study"
-        case .quiz: return "Quiz"
-        case .progress: return "Progress"
+        case .quiz: return "Drill"
+        case .progress: return "Journey"
         case .settings: return "Settings"
         }
     }
@@ -20,7 +20,7 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
     var systemImage: String {
         switch self {
         case .study: return "books.vertical"
-        case .quiz: return "timer"
+        case .quiz: return "bolt.fill"
         case .progress: return "chart.bar.fill"
         case .settings: return "gearshape"
         }
@@ -29,6 +29,7 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
 
 struct RootView: View {
     @EnvironmentObject private var bank: QuestionBank
+    @EnvironmentObject private var xp: XPManager
     #if os(macOS)
     @State private var selection: AppSection = .quiz
     #else
@@ -49,7 +50,7 @@ struct RootView: View {
             NavigationStack {
                 detail(for: selection)
             }
-            .background(AppTheme.pageBackground)
+            .gamePageBackground()
         }
         .navigationSplitViewStyle(.balanced)
         .onReceive(NotificationCenter.default.publisher(for: .startNewQuiz)) { _ in
@@ -59,20 +60,26 @@ struct RootView: View {
             selection = .progress
         }
         #else
-        TabView(selection: $selection) {
-            NavigationStack { StudyView() }
-                .tabItem { Label("Study", systemImage: "books.vertical") }
-                .tag(0)
-            NavigationStack { QuizTabView() }
-                .tabItem { Label("Quiz", systemImage: "timer") }
-                .tag(1)
-            NavigationStack { ProgressTabView() }
-                .tabItem { Label("Progress", systemImage: "chart.bar.fill") }
-                .tag(2)
-            NavigationStack { SettingsTabView() }
-                .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(3)
+        ZStack(alignment: .bottom) {
+            TabView(selection: $selection) {
+                NavigationStack { StudyView() }
+                    .tag(0)
+                NavigationStack { QuizTabView() }
+                    .tag(1)
+                NavigationStack { ProgressTabView() }
+                    .tag(2)
+                NavigationStack { SettingsTabView() }
+                    .tag(3)
+            }
+            .toolbar(.hidden, for: .tabBar)
+
+            FloatingGameTabBar(
+                selection: $selection,
+                items: AppSection.allCases.map { ($0.title, $0.systemImage) }
+            )
+            .padding(.bottom, 8)
         }
+        .gamePageBackground()
         #endif
     }
 

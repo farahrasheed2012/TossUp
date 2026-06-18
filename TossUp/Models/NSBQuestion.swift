@@ -121,6 +121,7 @@ enum TimerPreset: Int, CaseIterable, Identifiable {
 }
 
 enum QuizLength: Int, CaseIterable, Identifiable {
+    case five = 5
     case ten = 10
     case twentyFive = 25
     case fifty = 50
@@ -130,6 +131,7 @@ enum QuizLength: Int, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
+        case .five: return "5 questions"
         case .ten: return "10 questions"
         case .twentyFive: return "25 questions"
         case .fifty: return "50 questions"

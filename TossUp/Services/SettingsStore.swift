@@ -13,6 +13,7 @@ final class SettingsStore: ObservableObject {
     @AppStorage("studentName") var studentName: String = "Soha"
     @AppStorage("readQuestionsAloud") var readQuestionsAloud: Bool = true
     @AppStorage("showDetailedExplanations") var showDetailedExplanations: Bool = true
+    @AppStorage("preferDarkMode") var preferDarkMode: Bool = true
 
     var timerPreset: TimerPreset {
         get { TimerPreset(rawValue: timerPresetRaw) ?? .officialMC }
@@ -57,5 +58,9 @@ final class SettingsStore: ObservableObject {
         } catch {
             print("Failed to reset progress: \(error)")
         }
+    }
+
+    func resetXPAndStreak() {
+        XPManager.shared.resetProgress()
     }
 }

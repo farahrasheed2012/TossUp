@@ -56,7 +56,10 @@ First launch parses bundled PDFs into `~/Library/Application Support/TossUp/ques
 | File | Purpose |
 |------|---------|
 | `TOPICS_FOR_CLAUDE.md` | Topic IDs and JSON format for bundled question generation |
-| `CURSOR_PROMPT_ScienceBowlCoach_UX_Redesign.md` | Full UX overhaul spec for **Science Bowl Coach** (`../ScienceBowlCoach/`) — dark mode, XP/streak, buzzer drill, study session redesign |
+| `CURSOR_PROMPT_ScienceBowlCoach_UX_Redesign.md` | Full UX spec for **Science Bowl Coach** (`../ScienceBowlCoach/`) |
+| `CURSOR_PROMPT_TossUp_UX_Redesign.md` | Adapted UX spec for **this app** — shared colors, XP, floating tabs, buzzer drill |
+
+Both apps share the same visual DNA (dark game theme, subject colors, XP/streak). Implement in each codebase separately.
 
 ## Project layout
 
@@ -65,6 +68,7 @@ TossUp/
   download_nsb_pdfs.py      # Phase 1 — PDF downloader
   TOPICS_FOR_CLAUDE.md      # Question-generation topic IDs
   CURSOR_PROMPT_ScienceBowlCoach_UX_Redesign.md
+  CURSOR_PROMPT_TossUp_UX_Redesign.md
   NSB_PDFs/                 # Downloaded PDFs (not all committed)
   TossUp/
     Models/NSBQuestion.swift

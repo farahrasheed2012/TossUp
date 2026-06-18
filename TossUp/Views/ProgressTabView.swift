@@ -4,10 +4,26 @@ import SwiftData
 struct ProgressTabView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel = ProgressViewModel()
+    @ObservedObject private var xp = XPManager.shared
 
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Your NSB Journey 🚀")
+                        .font(GameFont.largeTitle())
+                        .foregroundStyle(AppTheme.primaryText)
+                    HStack(spacing: 16) {
+                        Label("\(xp.totalXP) XP", systemImage: "star.fill")
+                            .foregroundStyle(GameColors.xpGold)
+                        Label("\(max(xp.currentStreak, viewModel.currentStreak))-day streak", systemImage: "flame.fill")
+                            .foregroundStyle(GameColors.streakFlame)
+                    }
+                    .font(GameFont.headline())
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .gameCard()
+
                 AccuracyRingView(progress: viewModel.overallAccuracy, label: "Overall")
 
                 if viewModel.currentStreak > 0 {
@@ -35,7 +51,7 @@ struct ProgressTabView: View {
                                         .monospacedDigit()
                                 }
                                 ProgressView(value: value)
-                                    .tint(AppTheme.accent)
+                                    .tint(subject.gameColor)
                             }
                         }
                     }
@@ -60,17 +76,18 @@ struct ProgressTabView: View {
                         }
                     }
                 } else {
-                    Text("Complete a quiz to see your progress here.")
-                        .foregroundStyle(.secondary)
+                    Text("No drills yet — hit Drill and start a session!")
+                        .font(GameFont.body())
+                        .foregroundStyle(AppTheme.secondaryText)
                         .frame(maxWidth: .infinity)
-                        .cardStyle()
+                        .gameCard()
                 }
             }
             .padding(24)
             .contentColumn()
         }
         .background(AppTheme.pageBackground)
-        .navigationTitle("Progress")
+        .navigationTitle("Your Journey")
         .onAppear { viewModel.refresh(context: modelContext) }
     }
 }

@@ -160,6 +160,14 @@ final class QuizViewModel: ObservableObject {
         SpeechManager.shared.stop()
         let elapsed = Date().timeIntervalSince(questionStartedAt)
         let correct = !skipped && AnswerNormalizer.matches(user: answer, correct: question.correctAnswer)
+        if correct {
+            XPManager.shared.award(.tossupCorrect)
+            HapticManager.success()
+        } else if skipped {
+            HapticManager.error()
+        } else {
+            HapticManager.error()
+        }
         lastFeedbackCorrect = correct
         lastCorrectAnswer = question.correctAnswer
         lastUserAnswer = skipped ? "" : answer

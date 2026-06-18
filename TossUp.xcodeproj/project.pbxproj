@@ -32,6 +32,9 @@
 		TUB024 /* AnswerFeedbackCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF024 /* AnswerFeedbackCard.swift */; };
 		TUB025 /* TopicCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF025 /* TopicCatalog.swift */; };
 		TUB026 /* TopicPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF026 /* TopicPickerView.swift */; };
+		TUB027 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF027 /* DesignSystem.swift */; };
+		TUB028 /* XPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF028 /* XPManager.swift */; };
+		TUB029 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF029 /* HapticManager.swift */; };
 		TUB102 /* hewitt_ch17_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF102 /* hewitt_ch17_questions.json */; };
 		TUB103 /* bio_cells_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF103 /* bio_cells_questions.json */; };
 		TUB104 /* bio_bundled_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF104 /* bio_bundled_questions.json */; };
@@ -81,6 +84,9 @@
 		TUF024 /* AnswerFeedbackCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerFeedbackCard.swift; sourceTree = "<group>"; };
 		TUF025 /* TopicCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicCatalog.swift; sourceTree = "<group>"; };
 		TUF026 /* TopicPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicPickerView.swift; sourceTree = "<group>"; };
+		TUF027 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		TUF028 /* XPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPManager.swift; sourceTree = "<group>"; };
+		TUF029 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		TUF102 /* hewitt_ch17_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = hewitt_ch17_questions.json; sourceTree = "<group>"; };
 		TUF103 /* bio_cells_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bio_cells_questions.json; sourceTree = "<group>"; };
 		TUF104 /* bio_bundled_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bio_bundled_questions.json; sourceTree = "<group>"; };
@@ -168,6 +174,7 @@
 				TUF005 /* PDFParser.swift */,
 				TUF006 /* QuestionBank.swift */,
 				TUF007 /* SettingsStore.swift */,
+				TUF028 /* XPManager.swift */,
 				TUF020 /* BundledQuestionLoader.swift */,
 				TUF021 /* AnswerExplainer.swift */,
 				TUF022 /* AIStyleExplainer.swift */,
@@ -214,6 +221,8 @@
 			isa = PBXGroup;
 			children = (
 				TUF017 /* AppLayout.swift */,
+				TUF027 /* DesignSystem.swift */,
+				TUF029 /* HapticManager.swift */,
 				TUF023 /* QuestionDisplay.swift */,
 			);
 			path = Helpers;
@@ -361,6 +370,9 @@
 				TUB024 /* AnswerFeedbackCard.swift in Sources */,
 				TUB025 /* TopicCatalog.swift in Sources */,
 				TUB026 /* TopicPickerView.swift in Sources */,
+				TUB027 /* DesignSystem.swift in Sources */,
+				TUB028 /* XPManager.swift in Sources */,
+				TUB029 /* HapticManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

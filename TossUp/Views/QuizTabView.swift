@@ -23,7 +23,7 @@ struct QuizTabView: View {
             }
         }
         .background(AppTheme.pageBackground)
-        .navigationTitle("Quiz")
+        .navigationTitle("Drill")
     }
 
     private var sessionSubjects: [Subject] {
@@ -39,6 +39,12 @@ struct QuizTabView: View {
 
     private func persistSession() {
         let summary = viewModel.scoreSummary
+        let xp = XPManager.shared
+        if summary.correct == summary.total, summary.total > 0 {
+            xp.award(.perfectSession)
+        } else {
+            xp.award(.sessionComplete)
+        }
         let attempts = viewModel.results.map { result in
             QuestionAttemptRecord(
                 questionID: result.question.id,
@@ -63,6 +69,7 @@ struct QuizTabView: View {
 struct QuizSetupView: View {
     @ObservedObject var viewModel: QuizViewModel
     @ObservedObject var bank: QuestionBank
+    @ObservedObject private var xp = XPManager.shared
     let onStart: () -> Void
 
     private var availableCount: Int {
@@ -75,65 +82,113 @@ struct QuizSetupView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                EncouragingHeader(name: SettingsStore.shared.studentName)
-                    .cardStyle()
-
-                SectionCard(title: "Topics") {
-                    TopicPickerView(
-                        selectedTopicIDs: $viewModel.selectedTopicIDs,
-                        selectedSimpleSubjects: $viewModel.selectedSimpleSubjects,
-                        bank: bank
-                    )
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(CoachCopy.timeGreeting(name: SettingsStore.shared.studentName))
+                            .font(GameFont.title2())
+                            .foregroundStyle(AppTheme.primaryText)
+                        Text("Beat the clock. Nail the answer.")
+                            .font(GameFont.body())
+                            .foregroundStyle(AppTheme.secondaryText)
+                    }
+                    Spacer()
+                    XPStreakBar(streak: xp.currentStreak, xp: xp.totalXP)
                 }
+                .gameCard()
 
-                SectionCard(title: "Session") {
-                    VStack(alignment: .leading, spacing: 14) {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("Length")
-                                .font(.subheadline.weight(.medium))
-                            Picker("Questions", selection: $viewModel.quizLength) {
-                                ForEach(QuizLength.allCases) { length in
-                                    Text(length.label).tag(length)
-                                }
-                            }
-                            .pickerStyle(.segmented)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        QuickDrillChip(title: "⚡ 5 Bio", color: GameColors.biology) {
+                            quickStart(subject: .biology, count: 5)
                         }
-
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("Timer")
-                                .font(.subheadline.weight(.medium))
-                            Picker("Timer", selection: $viewModel.timerPreset) {
-                                ForEach(TimerPreset.allCases) { preset in
-                                    Text(preset.label).tag(preset)
-                                }
-                            }
-                            #if os(macOS)
-                            .pickerStyle(.menu)
-                            #else
-                            .pickerStyle(.segmented)
-                            #endif
+                        QuickDrillChip(title: "⚡ 5 Chem", color: GameColors.chemistry) {
+                            quickStart(subject: .chemistry, count: 5)
                         }
-
-                        Text("\(availableCount) questions available")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        QuickDrillChip(title: "⚡ 5 Phys", color: GameColors.physics) {
+                            quickStart(subject: .physics, count: 5)
+                        }
+                        QuickDrillChip(title: "🎲 Random 10", color: GameColors.tabAccent) {
+                            viewModel.quizLength = .ten
+                            onStart()
+                        }
                     }
                 }
 
-                Button(action: onStart) {
-                    Text("Start Quiz")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 4)
+                VStack(alignment: .leading, spacing: 14) {
+                    Label("Buzzer Drill", systemImage: "bolt.fill")
+                        .font(GameFont.title2())
+                        .foregroundStyle(GameColors.tabAccent)
+                    Text("4 choices · timed toss-ups")
+                        .font(GameFont.body())
+                        .foregroundStyle(AppTheme.secondaryText)
+
+                    SectionCard(title: "Topics") {
+                        TopicPickerView(
+                            selectedTopicIDs: $viewModel.selectedTopicIDs,
+                            selectedSimpleSubjects: $viewModel.selectedSimpleSubjects,
+                            bank: bank
+                        )
+                    }
+
+                    SectionCard(title: "Session") {
+                        VStack(alignment: .leading, spacing: 14) {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Length")
+                                    .font(GameFont.caption())
+                                Picker("Questions", selection: $viewModel.quizLength) {
+                                    ForEach(QuizLength.allCases) { length in
+                                        Text(length.label).tag(length)
+                                    }
+                                }
+                                .pickerStyle(.segmented)
+                            }
+
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Timer")
+                                    .font(GameFont.caption())
+                                Picker("Timer", selection: $viewModel.timerPreset) {
+                                    ForEach(TimerPreset.allCases) { preset in
+                                        Text(preset.label).tag(preset)
+                                    }
+                                }
+                                #if os(macOS)
+                                .pickerStyle(.menu)
+                                #else
+                                .pickerStyle(.segmented)
+                                #endif
+                            }
+
+                            Text("\(availableCount) questions available")
+                                .font(GameFont.caption())
+                                .foregroundStyle(AppTheme.secondaryText)
+                        }
+                    }
+
+                    Button(action: onStart) {
+                        Text("Let's go →")
+                            .font(GameFont.headline())
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(GameColors.chemistry)
+                            .foregroundStyle(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(availableCount == 0)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .disabled(availableCount == 0)
+                .gameCard()
             }
             .padding(24)
             .contentColumn()
         }
         .background(AppTheme.pageBackground)
+    }
+
+    private func quickStart(subject: Subject, count: Int) {
+        viewModel.selectedTopicIDs = [TopicCatalog.allTopicID(for: subject)]
+        viewModel.selectedSimpleSubjects = []
+        viewModel.quizLength = QuizLength(rawValue: count) ?? .five
+        onStart()
     }
 }
 
@@ -146,8 +201,9 @@ struct QuizSummaryView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                Text("Session Complete!")
-                    .font(.largeTitle.bold())
+                Text(CoachCopy.drillHeadline(correct: summary.correct, total: summary.total))
+                    .font(GameFont.largeTitle())
+                    .foregroundStyle(AppTheme.primaryText)
 
                 AccuracyRingView(progress: viewModel.scoreSummary.percent, label: "Accuracy")
 
@@ -199,7 +255,7 @@ struct QuizSummaryView: View {
                     }
                 }
 
-                Button("New Session", action: onDone)
+                Button("Drill Again →", action: onDone)
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
             }

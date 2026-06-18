@@ -1,25 +1,42 @@
 import SwiftUI
 
 enum AppTheme {
-    static let accent = Color.accentColor
-    static let success = Color.green
-    static let danger = Color.red
+    static var usesGameTheme: Bool {
+        UserDefaults.standard.object(forKey: "preferDarkMode") as? Bool ?? true
+    }
+
+    static var accent: Color { usesGameTheme ? GameColors.tabAccent : Color.accentColor }
+    static var success: Color { usesGameTheme ? GameColors.correct : Color.green }
+    static var danger: Color { usesGameTheme ? GameColors.incorrect : Color.red }
+
     static var pageBackground: Color {
+        if usesGameTheme { return GameColors.appBackground }
         #if os(macOS)
-        Color(nsColor: .windowBackgroundColor)
+        return Color(nsColor: .windowBackgroundColor)
         #else
-        Color(uiColor: .systemGroupedBackground)
+        return Color(uiColor: .systemGroupedBackground)
         #endif
     }
+
     static var cardBackground: Color {
+        if usesGameTheme { return GameColors.cardSurface }
         #if os(macOS)
-        Color(nsColor: .controlBackgroundColor)
+        return Color(nsColor: .controlBackgroundColor)
         #else
-        Color(uiColor: .secondarySystemBackground)
+        return Color(uiColor: .secondarySystemBackground)
         #endif
     }
+
     static var cardBorder: Color {
-        Color.primary.opacity(0.08)
+        usesGameTheme ? Color.white.opacity(0.08) : Color.primary.opacity(0.08)
+    }
+
+    static var primaryText: Color {
+        usesGameTheme ? GameColors.textPrimary : Color.primary
+    }
+
+    static var secondaryText: Color {
+        usesGameTheme ? GameColors.textSecondary : Color.secondary
     }
 }
 
