@@ -35,6 +35,7 @@
 		TUB027 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF027 /* DesignSystem.swift */; };
 		TUB028 /* XPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF028 /* XPManager.swift */; };
 		TUB029 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF029 /* HapticManager.swift */; };
+		TUB030 /* BuzzerDrillComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = TUF030 /* BuzzerDrillComponents.swift */; };
 		TUB102 /* hewitt_ch17_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF102 /* hewitt_ch17_questions.json */; };
 		TUB103 /* bio_cells_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF103 /* bio_cells_questions.json */; };
 		TUB104 /* bio_bundled_questions.json in Resources */ = {isa = PBXBuildFile; fileRef = TUF104 /* bio_bundled_questions.json */; };
@@ -87,6 +88,7 @@
 		TUF027 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		TUF028 /* XPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPManager.swift; sourceTree = "<group>"; };
 		TUF029 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
+		TUF030 /* BuzzerDrillComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuzzerDrillComponents.swift; sourceTree = "<group>"; };
 		TUF102 /* hewitt_ch17_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = hewitt_ch17_questions.json; sourceTree = "<group>"; };
 		TUF103 /* bio_cells_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bio_cells_questions.json; sourceTree = "<group>"; };
 		TUF104 /* bio_bundled_questions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bio_bundled_questions.json; sourceTree = "<group>"; };
@@ -223,6 +225,7 @@
 				TUF017 /* AppLayout.swift */,
 				TUF027 /* DesignSystem.swift */,
 				TUF029 /* HapticManager.swift */,
+				TUF030 /* BuzzerDrillComponents.swift */,
 				TUF023 /* QuestionDisplay.swift */,
 			);
 			path = Helpers;
@@ -373,6 +376,7 @@
 				TUB027 /* DesignSystem.swift in Sources */,
 				TUB028 /* XPManager.swift in Sources */,
 				TUB029 /* HapticManager.swift in Sources */,
+				TUB030 /* BuzzerDrillComponents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

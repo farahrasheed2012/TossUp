@@ -13,13 +13,15 @@ struct QuizTabView: View {
                 QuizSetupView(viewModel: viewModel, bank: bank) {
                     viewModel.startSession(from: bank)
                 }
-            case .inProgress, .feedback:
-                QuizSessionView(viewModel: viewModel)
-            case .summary:
-                QuizSummaryView(viewModel: viewModel, bank: bank) {
-                    persistSession()
+            case .inProgress, .summary:
+                QuizSessionView(viewModel: viewModel) {
                     viewModel.restartSetup()
                 }
+            }
+        }
+        .onChange(of: viewModel.phase) { _, phase in
+            if phase == .summary {
+                persistSession()
             }
         }
         .background(AppTheme.pageBackground)
@@ -39,8 +41,9 @@ struct QuizTabView: View {
 
     private func persistSession() {
         let summary = viewModel.scoreSummary
+        guard summary.total > 0 else { return }
         let xp = XPManager.shared
-        if summary.correct == summary.total, summary.total > 0 {
+        if summary.correct == summary.total {
             xp.award(.perfectSession)
         } else {
             xp.award(.sessionComplete)
@@ -199,15 +202,15 @@ struct QuizSummaryView: View {
     let onDone: () -> Void
 
     var body: some View {
+        let summary = viewModel.scoreSummary
         ScrollView {
             VStack(spacing: 20) {
                 Text(CoachCopy.drillHeadline(correct: summary.correct, total: summary.total))
                     .font(GameFont.largeTitle())
                     .foregroundStyle(AppTheme.primaryText)
 
-                AccuracyRingView(progress: viewModel.scoreSummary.percent, label: "Accuracy")
+                AccuracyRingView(progress: summary.percent, label: "Accuracy")
 
-                let summary = viewModel.scoreSummary
                 Text("\(summary.correct) of \(summary.total) correct")
                     .font(.title3)
                 if summary.skipped > 0 {

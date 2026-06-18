@@ -4,7 +4,6 @@ import SwiftUI
 enum QuizPhase: Equatable {
     case setup
     case inProgress
-    case feedback
     case summary
 }
 
@@ -31,16 +30,20 @@ final class QuizViewModel: ObservableObject {
 
     @Published private(set) var sessionQuestions: [NSBQuestion] = []
     @Published private(set) var currentIndex = 0
-    @Published private(set) var remainingSeconds: Int?
     @Published private(set) var results: [QuizResultItem] = []
-    @Published private(set) var lastFeedbackCorrect = false
-    @Published private(set) var lastCorrectAnswer = ""
-    @Published private(set) var lastFeedback: AnswerFeedback?
-    @Published private(set) var lastUserAnswer = ""
-    @Published var shortAnswerText = ""
+    @Published private(set) var drillState: DrillScreenState = .countdown
+    @Published private(set) var arcProgress: CGFloat = 1.0
+    @Published private(set) var countdownText = "3"
+    @Published private(set) var liveCorrect = 0
+    @Published private(set) var liveMissed = 0
+    @Published var flashColor: Color?
+    @Published var showXPFloater = false
 
     private var questionStartedAt = Date()
-    private var timerTask: Task<Void, Never>?
+    private var arcTimer = ArcCountdownTimer()
+    private var transitionTask: Task<Void, Never>?
+    private var countdownTask: Task<Void, Never>?
+    private var xpAtSessionStart = 0
 
     var currentQuestion: NSBQuestion? {
         guard currentIndex < sessionQuestions.count else { return nil }
@@ -49,7 +52,7 @@ final class QuizViewModel: ObservableObject {
 
     var progressLabel: String {
         guard !sessionQuestions.isEmpty else { return "0 / 0" }
-        return "\(currentIndex + 1) / \(sessionQuestions.count)"
+        return "Question \(currentIndex + 1) of \(sessionQuestions.count)"
     }
 
     var scoreSummary: (correct: Int, total: Int, skipped: Int, percent: Double) {
@@ -60,8 +63,26 @@ final class QuizViewModel: ObservableObject {
         return (correct, total, skipped, percent)
     }
 
+    var sessionXpEarned: Int {
+        max(0, XPManager.shared.totalXP - xpAtSessionStart)
+    }
+
+    func subjectBreakdown() -> [(name: String, correct: Int, total: Int, color: Color)] {
+        var totals: [Subject: (correct: Int, total: Int)] = [:]
+        for item in results {
+            var entry = totals[item.question.subject] ?? (0, 0)
+            entry.total += 1
+            if item.wasCorrect { entry.correct += 1 }
+            totals[item.question.subject] = entry
+        }
+        return totals.keys.sorted { $0.rawValue < $1.rawValue }.map { subject in
+            let entry = totals[subject]!
+            return (subject.displayName, entry.correct, entry.total, subject.gameColor)
+        }
+    }
+
     func startSession(from bank: QuestionBank) {
-        timerTask?.cancel()
+        cancelTasks()
         let pool = bank.questions(
             matchingTopicIDs: selectedTopicIDs,
             otherSubjects: selectedSimpleSubjects
@@ -70,152 +91,198 @@ final class QuizViewModel: ObservableObject {
 
         let count: Int
         switch quizLength {
-        case .all:
-            count = pool.count
-        default:
-            count = min(quizLength.rawValue, pool.count)
+        case .all: count = pool.count
+        default: count = min(quizLength.rawValue, pool.count)
         }
 
         sessionQuestions = Array(pool.shuffled().prefix(count))
         currentIndex = 0
         results = []
+        liveCorrect = 0
+        liveMissed = 0
         phase = .inProgress
-        shortAnswerText = ""
-        prepareCurrentQuestion()
+        xpAtSessionStart = XPManager.shared.totalXP
+        startCountdownSequence()
     }
 
-    func submitMultipleChoice(_ letter: Character) {
-        guard phase == .inProgress, let question = currentQuestion else { return }
-        gradeAnswer(String(letter), for: question)
+    func buzz() {
+        guard phase == .inProgress, drillState == .questionLive else { return }
+        arcTimer.cancel()
+        drillState = .buzzed
+        HapticManager.medium()
     }
 
-    func submitShortAnswer() {
-        guard phase == .inProgress, let question = currentQuestion else { return }
-        gradeAnswer(shortAnswerText, for: question)
+    func revealAnswer() {
+        guard phase == .inProgress, drillState == .buzzed else { return }
+        withAnimation(.spring(response: 0.4)) {
+            drillState = .revealed
+        }
     }
 
-    /// Skip the current question — counts as incorrect and shows the explanation.
+    func logCorrect() {
+        logOutcome(correct: true)
+    }
+
+    func logMissed() {
+        logOutcome(correct: false)
+    }
+
     func skipQuestion() {
         guard phase == .inProgress, let question = currentQuestion else { return }
         SpeechManager.shared.stop()
-        gradeAnswer("", for: question, skipped: true)
+        arcTimer.cancel()
+        recordResult(for: question, correct: false, skipped: true)
+        liveMissed += 1
+        triggerFlash(GameColors.incorrect)
+        HapticManager.error()
+        beginTransition()
     }
 
-    /// End the quiz early and jump to the session summary.
     func endSessionEarly() {
-        timerTask?.cancel()
+        cancelTasks()
         SpeechManager.shared.stop()
-        remainingSeconds = nil
         phase = .summary
     }
 
-    func skipTimerAndSubmitEmpty() {
-        guard phase == .inProgress, let question = currentQuestion else { return }
-        gradeAnswer("", for: question)
-    }
-
-    func continueAfterFeedback() {
-        guard phase == .feedback else { return }
-        timerTask?.cancel()
-        shortAnswerText = ""
-        if currentIndex + 1 >= sessionQuestions.count {
-            phase = .summary
-        } else {
-            currentIndex += 1
-            phase = .inProgress
-            prepareCurrentQuestion()
-        }
-    }
-
-    /// Called after read-aloud finishes; starts the countdown if it has not begun yet.
-    func startQuestionTimerAfterReadAloud() {
-        guard phase == .inProgress, remainingSeconds == nil else { return }
-        beginQuestionTimer()
-    }
-
-    private func prepareCurrentQuestion() {
-        timerTask?.cancel()
-        remainingSeconds = nil
-        questionStartedAt = Date()
-        if !SettingsStore.shared.readQuestionsAloud {
-            beginQuestionTimer()
-        }
-    }
-
     func restartSetup() {
-        timerTask?.cancel()
+        cancelTasks()
         phase = .setup
         sessionQuestions = []
         currentIndex = 0
         results = []
-        shortAnswerText = ""
+        drillState = .countdown
     }
 
     func missedQuestions(in bank: QuestionBank) -> [NSBQuestion] {
         results.filter { !$0.wasCorrect }.compactMap { bank.question(withID: $0.question.id) }
     }
 
-    private func gradeAnswer(_ answer: String, for question: NSBQuestion, skipped: Bool = false) {
-        timerTask?.cancel()
-        SpeechManager.shared.stop()
-        let elapsed = Date().timeIntervalSince(questionStartedAt)
-        let correct = !skipped && AnswerNormalizer.matches(user: answer, correct: question.correctAnswer)
+    func startQuestionTimerAfterReadAloud() {
+        guard phase == .inProgress, drillState == .questionLive else { return }
+        startArcTimer()
+    }
+
+    // MARK: - Private
+
+    private func startCountdownSequence() {
+        drillState = .countdown
+        let sequence = ["3", "2", "1", "Go!"]
+        countdownTask?.cancel()
+        countdownTask = Task {
+            for (index, label) in sequence.enumerated() {
+                guard !Task.isCancelled else { return }
+                await MainActor.run {
+                    countdownText = label
+                    HapticManager.rigid()
+                }
+                let delay: UInt64 = label == "Go!" ? 600_000_000 : 800_000_000
+                try? await Task.sleep(nanoseconds: delay)
+                if index == sequence.count - 1 {
+                    await MainActor.run { beginQuestionLive() }
+                }
+            }
+        }
+    }
+
+    private func beginQuestionLive() {
+        guard phase == .inProgress else { return }
+        questionStartedAt = Date()
+        arcProgress = 1.0
+        drillState = .questionLive
+        if !SettingsStore.shared.readQuestionsAloud {
+            startArcTimer()
+        }
+    }
+
+    private func startArcTimer() {
+        guard let question = currentQuestion else { return }
+        guard let seconds = timerPreset.seconds(for: question.type), seconds > 0 else {
+            arcProgress = 1
+            return
+        }
+        arcTimer.start(duration: TimeInterval(seconds), onProgress: { [weak self] progress in
+            self?.arcProgress = progress
+        }, onExpired: { [weak self] in
+            self?.handleTimeExpired()
+        })
+    }
+
+    private func handleTimeExpired() {
+        guard drillState == .questionLive, let question = currentQuestion else { return }
+        recordResult(for: question, correct: false, skipped: false)
+        liveMissed += 1
+        triggerFlash(GameColors.incorrect)
+        HapticManager.error()
+        withAnimation { drillState = .revealed }
+        beginTransition(after: 1.2)
+    }
+
+    private func logOutcome(correct: Bool) {
+        guard drillState == .revealed, let question = currentQuestion else { return }
+        recordResult(for: question, correct: correct, skipped: false)
         if correct {
-            XPManager.shared.award(.tossupCorrect)
+            liveCorrect += 1
+            _ = XPManager.shared.award(.tossupCorrect)
+            triggerFlash(GameColors.correct)
             HapticManager.success()
-        } else if skipped {
-            HapticManager.error()
+            showXPFloater = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+                self?.showXPFloater = false
+            }
         } else {
+            liveMissed += 1
+            triggerFlash(GameColors.incorrect)
             HapticManager.error()
         }
-        lastFeedbackCorrect = correct
-        lastCorrectAnswer = question.correctAnswer
-        lastUserAnswer = skipped ? "" : answer
-        lastFeedback = SettingsStore.shared.showDetailedExplanations
-            ? AnswerExplainer.feedback(for: question, userAnswer: answer, wasCorrect: correct, wasSkipped: skipped)
-            : nil
+        beginTransition()
+    }
+
+    private func recordResult(for question: NSBQuestion, correct: Bool, skipped: Bool) {
+        let elapsed = Date().timeIntervalSince(questionStartedAt)
         results.append(
             QuizResultItem(
                 id: UUID(),
                 question: question,
-                userAnswer: skipped ? "(skipped)" : answer,
+                userAnswer: skipped ? "(skipped)" : (correct ? question.correctAnswer : "(self-reported miss)"),
                 wasCorrect: correct,
                 wasSkipped: skipped,
                 timeToAnswer: elapsed
             )
         )
-        phase = .feedback
-        scheduleAutoAdvance()
     }
 
-    private func beginQuestionTimer() {
-        guard let question = currentQuestion else { return }
-        remainingSeconds = timerPreset.seconds(for: question.type)
-        timerTask?.cancel()
-        guard let initial = remainingSeconds else { return }
-
-        timerTask = Task {
-            var seconds = initial
-            while seconds > 0, !Task.isCancelled {
-                remainingSeconds = seconds
-                try? await Task.sleep(nanoseconds: 1_000_000_000)
-                seconds -= 1
-            }
-            if !Task.isCancelled {
-                remainingSeconds = 0
-                skipTimerAndSubmitEmpty()
-            }
-        }
-    }
-
-    private func scheduleAutoAdvance() {
-        let delay = SettingsStore.shared.autoAdvanceDelay
-        timerTask?.cancel()
-        timerTask = Task {
+    private func beginTransition(after delay: TimeInterval = 0.8) {
+        drillState = .transitioning
+        transitionTask?.cancel()
+        transitionTask = Task {
             try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-            if !Task.isCancelled {
-                continueAfterFeedback()
-            }
+            guard !Task.isCancelled else { return }
+            await MainActor.run { self.advanceQuestion() }
         }
+    }
+
+    private func advanceQuestion() {
+        arcTimer.cancel()
+        flashColor = nil
+        if currentIndex + 1 >= sessionQuestions.count {
+            phase = .summary
+        } else {
+            currentIndex += 1
+            beginQuestionLive()
+        }
+    }
+
+    private func triggerFlash(_ color: Color) {
+        withAnimation(.easeOut(duration: 0.15)) { flashColor = color }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+            withAnimation { self?.flashColor = nil }
+        }
+    }
+
+    private func cancelTasks() {
+        arcTimer.cancel()
+        transitionTask?.cancel()
+        countdownTask?.cancel()
+        SpeechManager.shared.stop()
     }
 }
