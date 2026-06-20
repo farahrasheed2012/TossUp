@@ -114,6 +114,7 @@ struct QuizSetupView: View {
                             viewModel.quizLength = .ten
                             onStart()
                         }
+                        .disabled(availableCount == 0)
                     }
                 }
 

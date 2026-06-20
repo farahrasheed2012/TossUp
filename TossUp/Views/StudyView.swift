@@ -2,11 +2,7 @@ import SwiftUI
 
 struct StudyView: View {
     @EnvironmentObject private var bank: QuestionBank
-    @State private var selectedTopicIDs: Set<String> = TopicCatalog.normalizedTopicIDs([
-        TopicCatalog.allTopicID(for: .chemistry),
-        TopicCatalog.allTopicID(for: .biology),
-        TopicCatalog.allTopicID(for: .math),
-    ])
+    @State private var selectedTopicIDs: Set<String> = []
     @State private var selectedSimpleSubjects: Set<Subject> = []
     @State private var searchText = ""
     @State private var showTopicFilter = false

@@ -19,11 +19,7 @@ struct QuizResultItem: Identifiable {
 @MainActor
 final class QuizViewModel: ObservableObject {
     @Published var phase: QuizPhase = .setup
-    @Published var selectedTopicIDs: Set<String> = TopicCatalog.normalizedTopicIDs([
-        TopicCatalog.allTopicID(for: .chemistry),
-        TopicCatalog.allTopicID(for: .biology),
-        TopicCatalog.allTopicID(for: .math),
-    ])
+    @Published var selectedTopicIDs: Set<String> = []
     @Published var selectedSimpleSubjects: Set<Subject> = []
     @Published var quizLength: QuizLength = SettingsStore.shared.defaultQuizLength
     @Published var timerPreset: TimerPreset = SettingsStore.shared.timerPreset
