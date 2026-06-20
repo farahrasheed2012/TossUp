@@ -53,6 +53,18 @@ File format matches `hewitt_ch17_questions.json` (see `BundledQuestionLoader.swi
 | `math-probability-stats` | Probability & Statistics |
 | `math-radicals` | Square Roots & Radicals |
 
+## Physics (`subject`: `"physics"`)
+
+| topicId | Topic name |
+|---------|------------|
+| `phys-all` | All Physics |
+| `phys-forces` | Forces & Newton's Laws |
+| `phys-motion` | Motion & Kinematics |
+| `phys-energy` | Work, Energy & Conservation |
+| `phys-waves` | Waves, Sound & Light |
+| `phys-electricity` | Circuits & Electricity |
+| `phys-magnetism` | Magnetism |
+
 ## Example JSON record
 
 ```json

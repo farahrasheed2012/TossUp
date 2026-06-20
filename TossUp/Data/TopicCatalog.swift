@@ -1,6 +1,6 @@
 import Foundation
 
-/// Drill-down quiz topics for Chemistry, Biology, and Math.
+/// Drill-down quiz topics for Chemistry, Biology, Math, and Physics.
 /// Use each topic `id` when generating bundled JSON (`topicId` field) for Claude.
 struct QuizTopic: Identifiable, Hashable {
     let id: String
@@ -33,13 +33,14 @@ struct QuizTopic: Identifiable, Hashable {
 }
 
 enum TopicCatalog {
-    static let drillDownSubjects: [Subject] = [.chemistry, .biology, .math]
-    static let simpleSubjects: [Subject] = [.physics, .earthSpace]
+    static let drillDownSubjects: [Subject] = [.chemistry, .biology, .math, .physics]
+    static let simpleSubjects: [Subject] = [.earthSpace]
 
     static func normalizedTopicIDs(_ ids: Set<String>) -> Set<String> {
         var result = ids
         if result.remove("chemistry-all") != nil { result.insert("chem-all") }
         if result.remove("biology-all") != nil { result.insert("bio-all") }
+        if result.remove("physics-all") != nil { result.insert("phys-all") }
         return result
     }
 
@@ -48,6 +49,7 @@ enum TopicCatalog {
         case .chemistry: return "chem-all"
         case .biology: return "bio-all"
         case .math: return "math-all"
+        case .physics: return "phys-all"
         default: return "\(subject.rawValue)-all"
         }
     }
@@ -57,6 +59,7 @@ enum TopicCatalog {
         case .chemistry: return chemistry
         case .biology: return biology
         case .math: return math
+        case .physics: return physics
         default: return []
         }
     }
@@ -200,8 +203,20 @@ enum TopicCatalog {
         QuizTopic(id: "math-radicals", subject: .math, name: "Square Roots & Radicals", sourceDeck: nil, sectionIDs: nil, parentID: nil),
     ]
 
+    // MARK: - Physics
+
+    private static let physics: [QuizTopic] = [
+        QuizTopic(id: "phys-all", subject: .physics, name: "All Physics", sourceDeck: nil, sectionIDs: nil, parentID: nil),
+        QuizTopic(id: "phys-forces", subject: .physics, name: "Forces & Newton's Laws", sourceDeck: nil, sectionIDs: nil, parentID: nil),
+        QuizTopic(id: "phys-motion", subject: .physics, name: "Motion & Kinematics", sourceDeck: nil, sectionIDs: nil, parentID: nil),
+        QuizTopic(id: "phys-energy", subject: .physics, name: "Work, Energy & Conservation", sourceDeck: nil, sectionIDs: nil, parentID: nil),
+        QuizTopic(id: "phys-waves", subject: .physics, name: "Waves, Sound & Light", sourceDeck: nil, sectionIDs: nil, parentID: nil),
+        QuizTopic(id: "phys-electricity", subject: .physics, name: "Circuits & Electricity", sourceDeck: nil, sectionIDs: nil, parentID: nil),
+        QuizTopic(id: "phys-magnetism", subject: .physics, name: "Magnetism", sourceDeck: nil, sectionIDs: nil, parentID: nil),
+    ]
+
     private static let topics: [String: QuizTopic] = {
-        Dictionary(uniqueKeysWithValues: (chemistry + biology + math).map { ($0.id, $0) })
+        Dictionary(uniqueKeysWithValues: (chemistry + biology + math + physics).map { ($0.id, $0) })
     }()
 
     private static let topicIndex = topics
